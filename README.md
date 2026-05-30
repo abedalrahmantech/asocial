@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to your Convex + Next.js + Clerk app
 
 This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
@@ -49,3 +50,7 @@ Join thousands of developers building full-stack apps with Convex:
 
 - Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
 - Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+=======
+# asocial
+A social media app - for demonstrating an end-to-end full-stack development understanding
+>>>>>>> b8918986620ea00638139f2d6d2999948b5efff6
