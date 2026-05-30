@@ -1,56 +1,59 @@
-<<<<<<< HEAD
-# Welcome to your Convex + Next.js + Clerk app
+# Asocial
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+Production-grade X-style social platform built with Next.js, Convex, Clerk, and shadcn/ui.
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+## Stack
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Next.js](https://nextjs.org/) for optimized web hosting and page routing
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
-- [Clerk](https://clerk.com/) for authentication
+- **Next.js 16** (App Router) — three-column feed shell
+- **Convex** — real-time database, feeds, DMs, notifications
+- **Clerk** — auth + Billing (Premium tiers)
+- **shadcn/ui** — component layer
+- **Vercel AI SDK + AI Gateway** — `/ai` chat and @AsocialAI mentions
 
 ## Get started
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
-
-```
+```bash
 npm install
 npm run dev
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+### Environment variables (`.env.local`)
 
 ```
-npm create convex@latest -- -t nextjs-clerk
+NEXT_PUBLIC_CONVEX_URL=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+CLERK_JWT_ISSUER_DOMAIN=
+CLERK_WEBHOOK_SIGNING_SECRET=
+AI_GATEWAY_API_KEY=
+AI_MODEL=openai/gpt-4o-mini
 ```
 
-Then:
+Set `CLERK_JWT_ISSUER_DOMAIN` on your Convex deployment as well.
 
-1. Open your app. There should be a "Claim your application" button from Clerk in the bottom right of your app.
-2. Follow the steps to claim your application and link it to this app.
-3. Follow step 3 in the [Convex Clerk onboarding guide](https://docs.convex.dev/auth/clerk#get-started) to create a Convex JWT template.
-4. Uncomment the Clerk provider in `convex/auth.config.ts`
-5. Paste the Issuer URL as `CLERK_JWT_ISSUER_DOMAIN` to your dev deployment environment variable settings on the Convex dashboard (see [docs](https://docs.convex.dev/auth/clerk#configuring-dev-and-prod-instances))
+### Clerk setup
 
-If you want to sync Clerk user data via webhooks, check out this [example repo](https://github.com/thomasballinger/convex-clerk-users-table/).
+1. Enable **Convex** integration in Clerk Dashboard
+2. Enable **Billing** → create User Plans: `free_user`, `premium`
+3. Attach feature slugs: `long_posts`, `verified_badge`, `edit_posts`, `ai_chat`, `ai_mentions`, `reply_priority`, `for_you_boost`
+4. Register webhook → `https://your-domain/api/webhooks/clerk`
+
+## Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | For You feed |
+| `/home/following` | Following feed |
+| `/explore` | Search & trends |
+| `/messages` | DMs |
+| `/notifications` | Activity |
+| `/bookmarks` | Saved posts |
+| `/pricing` | Clerk PricingTable |
+| `/ai` | Premium AI chat |
+| `/settings` | Account & billing |
 
 ## Learn more
 
-To learn more about developing your project with Convex, check out:
-
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
-
-## Join the community
-
-Join thousands of developers building full-stack apps with Convex:
-
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
-=======
-# asocial
-A social media app - for demonstrating an end-to-end full-stack development understanding
->>>>>>> b8918986620ea00638139f2d6d2999948b5efff6
+- [Convex docs](https://docs.convex.dev/)
+- [Clerk Billing B2C](https://clerk.com/docs/nextjs/guides/billing/for-b2c)
+- [Architecture plan](./docs/ASOCIAL_ARCHITECTURE_PLAN.md)
