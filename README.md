@@ -56,7 +56,9 @@ npx convex env set AI_MODEL openai/gpt-4o-mini
 ### AI Gateway smoke test
 
 ```bash
-vercel env pull .env.local
+# Pull OIDC token only (avoid overwriting Convex/Clerk keys in .env.local):
+vercel env pull .env.development.local --yes
+# Merge VERCEL_OIDC_TOKEN into .env.local, then:
 pnpm run ai:smoke
 # or: node --env-file=.env.local index.mjs
 ```
