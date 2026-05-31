@@ -4,11 +4,8 @@ import { internalAction } from "../_generated/server";
 import { v } from "convex/values";
 import { internal } from "../_generated/api";
 import { generateText } from "ai";
-import { createGateway } from "@ai-sdk/gateway";
 
-const gateway = createGateway({
-  apiKey: process.env.AI_GATEWAY_API_KEY,
-});
+const defaultModel = () => process.env.AI_MODEL ?? "openai/gpt-4o-mini";
 
 export const generateMentionReply = internalAction({
   args: { postId: v.id("posts") },
@@ -18,9 +15,8 @@ export const generateMentionReply = internalAction({
     });
     if (!post) return;
 
-    const model = process.env.AI_MODEL ?? "openai/gpt-4o-mini";
     const { text } = await generateText({
-      model: gateway(model),
+      model: defaultModel(),
       system:
         "You are @AsocialAI, a witty and helpful social media assistant on Asocial. Keep replies concise (under 280 chars when possible), friendly, and relevant to the thread.",
       prompt: `Thread context:\n${post.context}\n\nUser post mentioning you:\n${post.content}\n\nWrite a helpful reply.`,
@@ -45,14 +41,13 @@ export const chat = internalAction({
         sessionId: args.sessionId,
       });
 
-    const model = process.env.AI_MODEL ?? "openai/gpt-4o-mini";
     const prompt = [
       ...history.map((m) => `${m.role}: ${m.content}`),
       `user: ${args.message}`,
     ].join("\n");
 
     const { text } = await generateText({
-      model: gateway(model),
+      model: defaultModel(),
       system:
         "You are Asocial AI, a Grok-like assistant with access to social context. Be concise, insightful, and engaging.",
       prompt,

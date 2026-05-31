@@ -13,30 +13,61 @@ Production-grade X-style social platform built with Next.js, Convex, Clerk, and 
 ## Get started
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-### Environment variables (`.env.local`)
+Copy `.env.example` to `.env.local` and fill in Convex + Clerk values.
 
+## Vercel deployment
+
+The project is linked to Vercel as **`asocial`** under team **abed-al-rahmans-projects**.
+
+```bash
+vercel link
+vercel env pull .env.local
+pnpm run build
+vercel --prod
 ```
-NEXT_PUBLIC_CONVEX_URL=
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-CLERK_JWT_ISSUER_DOMAIN=
-CLERK_WEBHOOK_SIGNING_SECRET=
-AI_GATEWAY_API_KEY=
-AI_MODEL=openai/gpt-4o-mini
+
+### Required Vercel environment variables
+
+Set these in [Project Settings → Environment Variables](https://vercel.com/abed-al-rahmans-projects/asocial/settings/environment-variables):
+
+| Variable | Notes |
+|----------|--------|
+| `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL |
+| `NEXT_PUBLIC_CONVEX_SITE_URL` | Convex site URL |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
+| `CLERK_SECRET_KEY` | Clerk secret key |
+| `CLERK_JWT_ISSUER_DOMAIN` | e.g. `https://large-crow-40.clerk.accounts.dev` |
+| `CLERK_WEBHOOK_SIGNING_SECRET` | For `/api/webhooks/clerk` |
+| `AI_MODEL` | Optional, e.g. `openai/gpt-4o-mini` |
+
+**AI Gateway:** On Vercel, OIDC auth is automatic — no `AI_GATEWAY_API_KEY` needed. Enable AI Gateway in project settings, then run `vercel env pull .env.local` to get `VERCEL_OIDC_TOKEN` for local use.
+
+**Convex server-side AI** (mention replies, `/ai` via Convex actions) runs outside Vercel. Set on Convex:
+
+```bash
+npx convex env set AI_GATEWAY_API_KEY <your-vercel-ai-gateway-key>
+npx convex env set AI_MODEL openai/gpt-4o-mini
 ```
 
-Set `CLERK_JWT_ISSUER_DOMAIN` on your Convex deployment as well.
+### AI Gateway smoke test
 
-### Clerk setup
+```bash
+vercel env pull .env.local
+pnpm run ai:smoke
+# or: node --env-file=.env.local index.mjs
+```
 
-1. Enable **Convex** integration in Clerk Dashboard
-2. Enable **Billing** → create User Plans: `free_user`, `premium`
-3. Attach feature slugs: `long_posts`, `verified_badge`, `edit_posts`, `ai_chat`, `ai_mentions`, `reply_priority`, `for_you_boost`
-4. Register webhook → `https://your-domain/api/webhooks/clerk`
+Use `AI_MODEL=openai/gpt-4o-mini` on the free AI Gateway tier. Models like `openai/gpt-5.5` require paid credits.
+
+### GitHub CI/CD
+
+1. Connect the repo in Vercel: **Project → Settings → Git** → link `abedalrahmantech/asocial` (requires GitHub access for the Vercel team).
+2. Push to `main` triggers production deploys via Vercel Git integration.
+3. Optional GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint/build and can deploy with `VERCEL_TOKEN` secret.
 
 ## Routes
 
@@ -56,4 +87,5 @@ Set `CLERK_JWT_ISSUER_DOMAIN` on your Convex deployment as well.
 
 - [Convex docs](https://docs.convex.dev/)
 - [Clerk Billing B2C](https://clerk.com/docs/nextjs/guides/billing/for-b2c)
+- [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
 - [Architecture plan](./docs/ASOCIAL_ARCHITECTURE_PLAN.md)

@@ -9,7 +9,13 @@ import {
 } from "@/lib/clerk/billingWebhook";
 import { NextRequest, NextResponse } from "next/server";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+function getConvex() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!url) {
+    throw new Error("NEXT_PUBLIC_CONVEX_URL is not configured");
+  }
+  return new ConvexHttpClient(url);
+}
 
 function webhookSecret(): string {
   const secret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
@@ -25,7 +31,7 @@ async function syncBilling(
   status: string,
   subscriptionId?: string,
 ) {
-  await convex.mutation(api.webhooks.clerk.syncBillingFromClerkPublic, {
+  await getConvex().mutation(api.webhooks.clerk.syncBillingFromClerkPublic, {
     webhookSecret: webhookSecret(),
     clerkId,
     planSlug,
@@ -45,7 +51,7 @@ export async function POST(req: NextRequest) {
         const username =
           data.username ??
           data.email_addresses?.[0]?.email_address?.split("@")[0];
-        await convex.mutation(api.webhooks.clerk.upsertFromClerkPublic, {
+        await getConvex().mutation(api.webhooks.clerk.upsertFromClerkPublic, {
           webhookSecret: webhookSecret(),
           clerkId: data.id,
           username: username ?? undefined,
